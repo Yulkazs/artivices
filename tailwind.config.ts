@@ -20,9 +20,11 @@ const config: Config = {
           dark: "#a99a7c",
           light: "#ddd3bf",
         },
+        mist: "#9aa1ad",
       },
       fontFamily: {
-        display: ["var(--font-display)", "serif"],
+        logo: ["var(--font-logo)", "serif"],
+        accent: ["var(--font-accent)", "serif"],
         body: ["var(--font-body)", "sans-serif"],
       },
       maxWidth: {

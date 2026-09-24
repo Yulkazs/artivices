@@ -2,9 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---- Self-hosted fonts (public/fonts) ---- */
+
+@font-face {
+  font-family: "Orange Avenue DEMO";
+  src: url("/fonts/OrangeAvenueDEMO-Regular.woff2") format("woff2"),
+    url("/fonts/OrangeAvenueDEMO-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Recoleta";
+  src: url("/fonts/Recoleta-Regular.woff2") format("woff2"),
+    url("/fonts/Recoleta-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Light.woff2") format("woff2"),
+    url("/fonts/Satoshi-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-LightItalic.woff2") format("woff2"),
+    url("/fonts/Satoshi-LightItalic.otf") format("opentype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Regular.woff2") format("woff2"),
+    url("/fonts/Satoshi-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Italic.woff2") format("woff2"),
+    url("/fonts/Satoshi-Italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Medium.woff2") format("woff2"),
+    url("/fonts/Satoshi-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-MediumItalic.woff2") format("woff2"),
+    url("/fonts/Satoshi-MediumItalic.otf") format("opentype");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Bold.woff2") format("woff2"),
+    url("/fonts/Satoshi-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-BoldItalic.woff2") format("woff2"),
+    url("/fonts/Satoshi-BoldItalic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Black.woff2") format("woff2"),
+    url("/fonts/Satoshi-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-BlackItalic.woff2") format("woff2"),
+    url("/fonts/Satoshi-BlackItalic.otf") format("opentype");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
-  --font-display: "Cormorant Garamond", "Georgia", serif;
-  --font-body: "Jost", "Helvetica Neue", Arial, sans-serif;
+  --font-logo: "Orange Avenue DEMO";
+  --font-accent: "Recoleta";
+  --font-body: "Satoshi";
 }
 
 html {

@@ -5,8 +5,6 @@ import LogoMark from "./LogoMark";
 
 const NAV_LINKS = [
   { label: "Home", href: "#top" },
-  { label: "Work", href: "#work" },
-  { label: "Process", href: "#process" },
   { label: "Case Studies", href: "#case-studies" },
 ];
 
@@ -21,8 +19,8 @@ export default function Header() {
           href="#top"
           className="focus-ring flex items-center gap-3 text-linen"
         >
-          <LogoMark className="h-7 w-7 md:h-8 md:w-8" />
-          <span className="font-display text-2xl tracking-wide md:text-[1.7rem]">
+          <LogoMark className="h-7 w-7 text-linen md:h-8 md:w-8" />
+          <span className="font-logo text-2xl tracking-wide md:text-[1.7rem]">
             Artivices
           </span>
         </a>
@@ -32,7 +30,7 @@ export default function Header() {
             <a
               key={link.label}
               href={link.href}
-              className="focus-ring font-display text-lg text-linen/90 transition-colors hover:text-linen"
+              className="focus-ring font-accent text-lg text-linen/90 transition-colors hover:text-linen"
             >
               {link.label}
             </a>
@@ -42,7 +40,7 @@ export default function Header() {
         <div className="hidden md:block">
           <a
             href="#contact"
-            className="focus-ring inline-flex items-center rounded-md bg-clay px-6 py-2.5 font-display text-lg text-ink transition-colors hover:bg-clay-light"
+            className="focus-ring inline-flex items-center rounded-md bg-clay px-6 py-2.5 font-accent text-lg text-ink transition-colors hover:bg-clay-light"
           >
             Get Started
           </a>
@@ -84,7 +82,7 @@ export default function Header() {
               key={link.label}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="focus-ring border-b border-ink-line/60 py-3 font-display text-xl text-linen/90"
+              className="focus-ring border-b border-ink-line/60 py-3 font-accent text-xl text-linen/90"
             >
               {link.label}
             </a>
@@ -92,7 +90,7 @@ export default function Header() {
           <a
             href="#contact"
             onClick={() => setOpen(false)}
-            className="focus-ring mt-4 inline-flex items-center justify-center rounded-md bg-clay px-6 py-3 font-display text-lg text-ink"
+            className="focus-ring mt-4 inline-flex items-center justify-center rounded-md bg-clay px-6 py-3 font-accent text-lg text-ink"
           >
             Get Started
           </a>

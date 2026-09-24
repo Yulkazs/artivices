@@ -32,8 +32,8 @@ export default function Footer() {
         <div className="flex flex-col gap-12 md:flex-row md:justify-between">
           <div className="max-w-xs">
             <div className="flex items-center gap-3 text-linen">
-              <LogoMark className="h-7 w-7" />
-              <span className="font-display text-2xl">Artivices</span>
+              <LogoMark className="h-7 w-7 text-linen" />
+              <span className="font-logo text-2xl">Artivices</span>
             </div>
             <p className="mt-4 font-body text-sm leading-relaxed text-linen/55">
               A small studio designing and building websites for businesses
@@ -44,7 +44,7 @@ export default function Footer() {
           <div className="grid grid-cols-2 gap-10 sm:grid-cols-3 md:gap-16">
             {COLUMNS.map((col) => (
               <div key={col.heading}>
-                <p className="font-display text-lg italic text-clay-light">
+                <p className="font-body text-sm tracking-wide text-mist">
                   {col.heading}
                 </p>
                 <ul className="mt-4 space-y-3">

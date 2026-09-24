@@ -25,14 +25,14 @@ export default function CaseStudies() {
       <div className="container-x">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="font-display text-lg italic text-clay-light">Case studies</p>
-            <h2 className="mt-3 max-w-xl font-display text-4xl leading-tight text-linen md:text-[2.75rem]">
+            <p className="font-body text-sm tracking-wide text-mist">Case studies</p>
+            <h2 className="mt-3 max-w-xl font-body font-medium text-4xl leading-tight text-linen md:text-[2.75rem]">
               Recent work, and what it moved.
             </h2>
           </div>
           <a
             href="#contact"
-            className="focus-ring hidden font-display text-lg text-linen/80 underline decoration-clay-dark decoration-1 underline-offset-8 transition-colors hover:text-linen md:inline-block"
+            className="focus-ring hidden font-body text-lg text-linen/80 underline decoration-clay-dark decoration-1 underline-offset-8 transition-colors hover:text-linen md:inline-block"
           >
             Discuss a similar project
           </a>
@@ -49,7 +49,7 @@ export default function CaseStudies() {
                 className={`aspect-[4/3] w-full bg-gradient-to-br ${item.gradient} transition-transform duration-500 group-hover:scale-[1.03]`}
               />
               <div className="p-6">
-                <p className="font-display text-2xl text-linen">{item.client}</p>
+                <p className="font-body font-medium text-2xl text-linen">{item.client}</p>
                 <p className="mt-1 font-body text-sm text-linen/55">{item.industry}</p>
                 <p className="mt-4 font-body text-base leading-relaxed text-linen/75">
                   {item.result}

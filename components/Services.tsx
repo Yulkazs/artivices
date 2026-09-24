@@ -27,8 +27,8 @@ export default function Services() {
       <div className="container-x">
         <div className="grid gap-12 md:grid-cols-[minmax(0,340px)_1fr] md:gap-16">
           <div className="md:sticky md:top-32 md:self-start">
-            <p className="font-display text-lg italic text-clay-light">What we build</p>
-            <h2 className="mt-3 font-display text-4xl leading-tight text-linen md:text-[2.75rem]">
+            <p className="font-body text-sm tracking-wide text-mist">What we build</p>
+            <h2 className="mt-3 font-body font-medium text-4xl leading-tight text-linen md:text-[2.75rem]">
               Four kinds of site. One standard.
             </h2>
             <p className="mt-5 max-w-sm font-body text-base leading-relaxed text-linen/70">
@@ -45,12 +45,12 @@ export default function Services() {
                 className="group flex flex-col gap-2 py-8 first:pt-0 md:flex-row md:items-baseline md:justify-between md:gap-8"
               >
                 <div className="flex items-baseline gap-4 md:w-2/5">
-                  <h3 className="font-display text-2xl text-linen md:text-3xl">
+                  <h3 className="font-body font-medium text-2xl text-linen md:text-3xl">
                     {service.title}
                   </h3>
                 </div>
                 <div className="flex items-start gap-6 md:w-3/5">
-                  <span className="mt-1 w-24 shrink-0 font-display text-base italic text-clay-dark">
+                  <span className="mt-1 w-24 shrink-0 font-body text-base italic text-clay-dark">
                     {service.tag}
                   </span>
                   <p className="font-body text-base leading-relaxed text-linen/70">

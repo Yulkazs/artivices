@@ -19,8 +19,8 @@ export default function Header() {
           href="#top"
           className="focus-ring flex items-center gap-3 text-linen"
         >
-          <LogoMark className="h-12 w-12 text-linen md:h-10 md:w-10" />
-          <span className="font-logo text-3xl tracking-wide md:text-[2rem]">
+          <LogoMark className="h-11 w-11 shrink-0 -translate-y-[1px] text-linen md:h-12 md:w-12" />
+          <span className="font-logo text-3xl leading-none tracking-wide md:text-[2rem]">
             Artivices
           </span>
         </a>
@@ -48,21 +48,20 @@ export default function Header() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label="Toggle menu"
-          className="focus-ring flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="focus-ring relative h-10 w-10 shrink-0 md:hidden"
         >
           <span
-            className={`h-px w-6 bg-linen transition-transform ${
-              open ? "translate-y-[3.5px] rotate-45" : ""
+            className={`absolute left-1/2 top-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full bg-linen transition-transform duration-300 ease-[cubic-bezier(0.65,0,0.35,1)] ${
+              open
+                ? "-translate-y-1/2 rotate-45"
+                : "-translate-y-[calc(50%+5px)] rotate-0"
             }`}
           />
           <span
-            className={`h-px w-6 bg-linen transition-opacity ${
-              open ? "opacity-0" : "opacity-100"
-            }`}
-          />
-          <span
-            className={`h-px w-6 bg-linen transition-transform ${
-              open ? "-translate-y-[3.5px] -rotate-45" : ""
+            className={`absolute left-1/2 top-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full bg-linen transition-transform duration-300 ease-[cubic-bezier(0.65,0,0.35,1)] ${
+              open
+                ? "-translate-y-1/2 -rotate-45"
+                : "-translate-y-[calc(50%-5px)] rotate-0"
             }`}
           />
         </button>

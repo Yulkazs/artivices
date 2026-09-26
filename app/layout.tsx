@@ -2,9 +2,103 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Artivices — Websites built for businesses that mean it",
+  title: "Artivices ‣ B2B Webdesign",
   description:
-    "Artivices designs and builds bespoke websites for ambitious companies. Strategy, design and engineering, delivered as one considered piece of work.",
+    "We design and build websites and brands that support your business, from first impression to customer conversion.",
+  
+    keywords: [
+    // Dutch
+    "webdesign",
+    "website laten maken",
+    "website laten bouwen",
+    "webdesigner",
+    "webdesign bureau",
+    "professionele website",
+    "zakelijke website",
+    "branding",
+    "branding bureau",
+    "huisstijl",
+    "logo ontwerp",
+    "visuele identiteit",
+    "website onderhoud",
+
+    // English
+    "web design",
+    "web development",
+    "web design agency",
+    "web design studio",
+    "web design company",
+    "website development",
+    "business website",
+    "branding agency",
+    "branding studio",
+    "brand identity",
+    "visual identity",
+    "website maintenance",
+  ],
+
+  creator: "Artivices",
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  openGraph: {
+    title: "Artivices ‣ B2B Webdesign",
+    description:
+      "We design and build websites and brands that support your business, from first impression to customer conversion.",
+    url: "https://artivices.vercel.app",
+    siteName: "Artivices",
+    images: [
+      {
+        url: "/Links/og-image.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Artivices ‣ B2B Webdesign",
+    description:
+      "We design and build websites and brands that support your business, from first impression to customer conversion.",
+    images: ["/Links/twitter-image.png"],
+  },
+
+  icons: {
+    icon: [
+      {
+        url: "/favicons/favicon.ico",
+        type: "image/x-icon",
+      },
+      {
+        url: "/favicons/favicon-32x32.png",
+        type: "image/png",
+      },
+      {
+        url: "/favicons/favicon-16x16.png",
+        type: "image/png",
+      },
+    ],
+
+    apple: [
+      {
+        url: "/favicons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ]
+  }
 };
 
 export default function RootLayout({

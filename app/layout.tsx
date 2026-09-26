@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Artivices ‣ B2B Webdesign",
   description:
-    "We design and build websites and brands that support your business, from first impression to customer conversion.",
+    "B2B webdesign for businesses that need a website to build trust, explain what they do, and turn visitors into customers.",
   
     keywords: [
     // Dutch
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Artivices ‣ B2B Webdesign",
     description:
-      "We design and build websites and brands that support your business, from first impression to customer conversion.",
+      "B2B webdesign for businesses that need a website to build trust, explain what they do, and turn visitors into customers.",
     url: "https://artivices.vercel.app",
     siteName: "Artivices",
     images: [
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Artivices ‣ B2B Webdesign",
     description:
-      "We design and build websites and brands that support your business, from first impression to customer conversion.",
+      "B2B webdesign for businesses that need a website to build trust, explain what they do, and turn visitors into customers.",
     images: ["/Links/twitter-image.png"],
   },
 

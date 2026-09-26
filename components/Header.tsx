@@ -19,8 +19,8 @@ export default function Header() {
           href="#top"
           className="focus-ring flex items-center gap-3 text-linen"
         >
-          <LogoMark className="h-7 w-7 text-linen md:h-8 md:w-8" />
-          <span className="font-logo text-2xl tracking-wide md:text-[1.7rem]">
+          <LogoMark className="h-12 w-12 text-linen md:h-10 md:w-10" />
+          <span className="font-logo text-3xl tracking-wide md:text-[2rem]">
             Artivices
           </span>
         </a>
@@ -35,16 +35,13 @@ export default function Header() {
               {link.label}
             </a>
           ))}
-        </nav>
-
-        <div className="hidden md:block">
           <a
             href="#contact"
             className="focus-ring inline-flex items-center rounded-md bg-clay px-6 py-2.5 font-accent text-lg text-ink transition-colors hover:bg-clay-light"
           >
             Get Started
           </a>
-        </div>
+        </nav>
 
         <button
           type="button"

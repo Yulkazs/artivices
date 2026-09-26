@@ -19,16 +19,12 @@ export default function Hero() {
     offset: ["start start", "end end"],
   });
 
-  // The panel is pinned to the right edge and the bottom of the screen from
-  // the start (it never has a right or bottom margin — it "comes from the
-  // right side"). Scrolling only pulls its left edge and top margin in
-  // until it covers the whole viewport.
   const panelLeft = useTransform(
     scrollYProgress,
     [0, 1],
     [isDesktop ? "39%" : "0%", "0%"]
   );
-  const panelTop = useTransform(scrollYProgress, [0, 1], [isDesktop ? 128 : 0, 0]);
+  const panelTop = useTransform(scrollYProgress, [0, 1], [isDesktop ? "22%" : "0%", "0%"]);
   const panelRadius = useTransform(scrollYProgress, [0, 1], [isDesktop ? 28 : 0, 0]);
 
   const textOpacity = useTransform(scrollYProgress, [0, 0.35], [1, 0]);
@@ -64,26 +60,26 @@ export default function Hero() {
           style={{ opacity: textOpacity, y: textY }}
           className="container-x relative z-10 flex h-full items-center"
         >
-          <div className="max-w-[19rem] pt-20 sm:max-w-md md:max-w-lg md:pt-0">
-            <p className="font-body text-sm tracking-wide text-mist md:text-base">
+          <div className="min-w-0 max-w-[clamp(14rem,29vw,35rem)] pt-20 md:pt-0">
+            <p className="font-body text-[clamp(0.85rem,1.75vw,1.15rem)] tracking-wide text-mist">
               B2B Webdesign
             </p>
-            <h1 className="mt-4 font-body text-[2.6rem] font-medium leading-[1.05] text-linen sm:text-5xl md:text-6xl lg:text-[4.2rem]">
+            <h1 className="mt-4 font-body text-[clamp(1.85rem,3.6vw,4.3rem)] font-medium leading-[1.08] text-linen">
               Websites that help{" "}
               <span className="font-logo font-normal text-clay">your</span>{" "}
-              <span className="font-logo font-normal text-linen">
+              <span className="font-logo font-normal text-clay">
                 business
               </span>{" "}
               grow.
             </h1>
-            <p className="mt-6 max-w-sm font-body text-base leading-relaxed text-linen/70 md:text-lg">
+            <p className="mt-6 max-w-[clamp(13rem,27vw,33rem)] font-body text-[clamp(0.9rem,1vw,1.05rem)] leading-relaxed text-linen/70">
               Your website should do more than look good. It should build
               trust, explain what you do, and turn visitors into customers.
             </p>
             <div className="mt-10">
               <a
                 href="#contact"
-                className="focus-ring group inline-flex items-center gap-2 font-accent text-lg text-linen"
+                className="focus-ring group inline-flex items-center gap-2 font-accent text-[clamp(0.95rem,1.6vw,1.3rem)] text-linen"
               >
                 Get Started
                 <span className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">

@@ -14,12 +14,12 @@ export default function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-ink/80 via-ink/30 to-transparent" />
-      <div className="container-x relative flex h-20 items-center justify-between md:h-24">
+      <div className="relative flex h-20 items-center justify-between pl-6 pr-6 md:h-24 md:pl-14 md:pr-10 xl:pl-24 xl:pr-16">
         <a
           href="#top"
           className="focus-ring flex items-center gap-3 text-linen"
         >
-          <LogoMark className="h-11 w-11 shrink-0 -translate-y-[1px] text-linen md:h-12 md:w-12" />
+          <LogoMark className="h-11 w-11 shrink-0 -translate-y-[6px] text-linen md:h-12 md:w-12" />
           <span className="font-logo text-3xl leading-none tracking-wide md:text-[2rem]">
             Artivices
           </span>

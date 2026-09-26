@@ -58,13 +58,13 @@ export default function Hero() {
 
         <motion.div
           style={{ opacity: textOpacity, y: textY }}
-          className="relative z-10 flex h-full items-center pl-6 pr-6 md:pl-10 md:pr-10 xl:pl-16"
+          className="relative z-10 flex h-full items-center pl-6 pr-6 md:pl-14 md:pr-10 xl:pl-24"
         >
-          <div className="min-w-0 max-w-[clamp(14rem,26vw,32rem)] pt-20 md:pt-0">
+          <div className="min-w-0 max-w-[clamp(16rem,84vw,20rem)] pt-20 md:max-w-[clamp(14rem,26vw,32rem)] md:pt-0">
             <p className="font-body text-[clamp(0.85rem,1.75vw,1.15rem)] tracking-wide text-mist">
               B2B Webdesign
             </p>
-            <h1 className="mt-4 font-body text-[clamp(2.35rem,7vw,4.3rem)] font-medium leading-[1.08] text-linen">
+            <h1 className="mt-4 font-body text-[clamp(2.75rem,7.5vw,4.3rem)] font-medium leading-[1.08] text-linen">
               Websites that help{" "}
               <span className="font-logo font-normal text-clay">your</span>{" "}
               <span className="font-logo font-normal text-clay">

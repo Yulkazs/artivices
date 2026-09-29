@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Loader from "@/components/Loader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -107,6 +108,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-body antialiased bg-ink text-linen">
+        <Loader />
         {children}
       </body>
     </html>

@@ -6,6 +6,7 @@ import Process from "@/components/Process";
 import Testimonial from "@/components/Testimonial";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
+import Statement from "@/components/Statement";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        <Statement />
         <Services />
         <CaseStudies />
         <Process />

@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     siteName: "Artivices",
     images: [
       {
-        url: "/Links/og-image.png",
+        url: "/links/og-image.png",
         width: 1200,
         height: 630,
       },
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     title: "Artivices ‣ B2B Webdesign",
     description:
       "B2B webdesign for businesses that need a website to build trust, explain what they do, and turn visitors into customers.",
-    images: ["/Links/twitter-image.png"],
+    images: ["/links/twitter-image.png"],
   },
 
   icons: {

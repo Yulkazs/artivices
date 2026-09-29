@@ -48,10 +48,10 @@ function CaseRow({ item }: { item: Case }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10% 0px" }}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className="relative flex flex-col gap-6 md:grid md:grid-cols-[36.5%_63.5%] md:gap-0"
+      className="relative flex flex-col gap-6 [container-type:inline-size] md:grid md:grid-cols-[36.5%_63.5%] md:gap-0"
     >
       {/* Title spans the whole row so it can run over the image */}
-      <h3 className="case-title order-1 whitespace-nowrap font-body text-[clamp(2.25rem,4.8vw,4.5rem)] font-light uppercase leading-none md:absolute md:left-0 md:top-8 md:z-10 md:w-full">
+      <h3 className="case-title order-1 whitespace-nowrap font-body text-[clamp(2.25rem,10vw,3.5rem)] font-light uppercase leading-none md:absolute md:left-0 md:top-[2.8cqw] md:z-10 md:w-full md:text-[5.8cqw]">
         {item.name}
       </h3>
 
@@ -69,13 +69,13 @@ function CaseRow({ item }: { item: Case }) {
         )}
       </div>
 
-      <div className="order-3 flex flex-col md:col-start-1 md:row-start-1 md:pr-5 md:pt-[clamp(6.5rem,9vw,9rem)]">
+      <div className="order-3 flex flex-col md:col-start-1 md:row-start-1 md:pr-5 md:pt-[12cqw]">
         <p className="font-body text-sm leading-relaxed text-ink/80 md:ml-auto md:max-w-[24rem] md:text-right md:text-base">
           {item.body}
         </p>
         <a
           href={item.href}
-          className="focus-ring mt-6 font-body text-base font-medium text-ink underline decoration-transparent decoration-1 underline-offset-8 transition-colors hover:decoration-ink md:ml-auto md:mt-auto md:pb-3"
+          className="focus-ring mt-6 font-body text-lg font-medium text-ink md:text-xl underline decoration-transparent decoration-1 underline-offset-8 transition-colors hover:decoration-ink md:ml-auto md:mt-auto md:pb-3"
         >
           View Case Study
         </a>
@@ -91,7 +91,7 @@ export default function CaseStudies() {
       aria-labelledby="case-studies-heading"
       className="relative overflow-hidden bg-[#fafafa] text-ink"
     >
-      <div className={`${PAD_X} pt-8 md:pt-12`}>
+      <div className={`${PAD_X} pt-20 md:pt-32 xl:pt-40`}>
         {/* Heading row */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -127,20 +127,29 @@ export default function CaseStudies() {
         </div>
       </div>
 
-      {/* Looper lines fading into the dark section below. The SVG is 1920px
-          wide with empty space at the top, so it's pinned to the bottom of a
-          fixed-height strip and the empty part is cropped off. */}
+      {/* Looper lines fading into the dark section below. The SVG is cropped
+          to its visible content, so it shows in full. Desktop: capped width,
+          natural ratio. Mobile: taller strip, cropped sideways around the
+          crest so the lines stay readable. The fade is a fixed height so it
+          never covers the whole drawing. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none relative mt-24 h-[clamp(16rem,30vw,28rem)] md:mt-32"
+        className="pointer-events-none relative mx-auto mt-28 h-[22rem] w-full max-w-[1500px] md:mt-44 md:h-auto md:aspect-[1920/696] looper-mask"
       >
         <img
           src="/images/LooperGroup.svg"
           alt=""
-          className="absolute inset-0 h-full w-full object-cover object-bottom"
+          className="absolute inset-0 h-full w-full object-cover object-[38%_100%]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink" />
       </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 -bottom-px h-32 md:h-52 lg:h-64"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(12,10,7,0) 0%, rgba(12,10,7,0.06) 18%, rgba(12,10,7,0.22) 40%, rgba(12,10,7,0.55) 62%, rgba(12,10,7,0.88) 84%, #0c0a07 100%)",
+        }}
+      />
     </section>
   );
 }

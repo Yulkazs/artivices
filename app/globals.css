@@ -189,3 +189,12 @@ body {
     color: transparent;
   }
 }
+
+/* Looper: on screens wider than its max width, fade the side edges so the
+   lines don't stop abruptly. */
+@media (min-width: 1501px) {
+  .looper-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  }
+}

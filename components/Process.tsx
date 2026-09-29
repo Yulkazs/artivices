@@ -23,7 +23,7 @@ const STEPS = [
 
 export default function Process() {
   return (
-    <section id="process" className="border-t border-ink-line/70 bg-ink py-24 md:py-32">
+    <section id="process" className="bg-ink py-24 md:py-32">
       <div className="container-x">
         <p className="font-body text-sm tracking-wide text-mist">How it runs</p>
         <h2 className="mt-3 max-w-xl font-body font-medium text-4xl leading-tight text-linen md:text-[2.75rem]">
@@ -32,7 +32,7 @@ export default function Process() {
 
         <div className="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((step) => (
-            <div key={step.n} className="border-t border-ink-line/70 pt-6">
+            <div key={step.n} className="pt-6">
               <span className="font-body font-bold text-3xl text-clay-dark">{step.n}</span>
               <h3 className="mt-4 font-body font-medium text-2xl text-linen">{step.title}</h3>
               <p className="mt-3 font-body text-base leading-relaxed text-linen/70">

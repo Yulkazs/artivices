@@ -166,3 +166,26 @@ body {
     padding-right: 4rem;
   }
 }
+
+@media (min-width: 1280px) {
+  .container-x {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+ 
+/* Case study title: ink where it sits on the page, white where it runs over
+   the image. The hard colour stop matches the image's left edge (36.5% of
+   the row). Desktop only — on mobile the image sits below the title. */
+.case-title {
+  color: #0c0a07;
+}
+@media (min-width: 768px) {
+  .case-title {
+    background-image: linear-gradient(to right, #0c0a07 36.5%, #ffffff 36.5%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+}

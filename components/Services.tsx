@@ -1,119 +1,327 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import {
+  motion,
+  MotionValue,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 
-const SERVICES = [
+/**
+ * Services — "What we build"
+ *
+ * Layout: a dark intro block, then five full-bleed bands that get lighter
+ * one after the other (01 dark → 05 near-white).
+ *
+ * Scroll effect: the section pins to the screen and one scroll timeline plays
+ * the bands in strictly one after the other. A band only starts once the one
+ * above it has fully landed. Each band grows out from the bottom edge of the
+ * layer above it — its top stays tucked beneath that layer while it slides
+ * down. Nothing below is reserved or visible until its turn, so there are no
+ * empty slots. Once the stack outgrows the screen it scrolls up with the
+ * newest band, and after 05 the section un-pins and you scroll on normally.
+ */
+
+type Service = {
+  index: string;
+  title: string;
+  tags: string[];
+  body: string;
+  /** band background */
+  bg: string;
+  /** number, title and body text colour */
+  fg: string;
+  /** tag line colour */
+  tagFg: string;
+};
+
+const SERVICES: Service[] = [
   {
     index: "01",
-    title: "Brand websites",
+    title: "Brand Websites",
     tags: ["Landing pages", "Messaging", "Conversion copy", "Analytics"],
     body: "A site that carries the same weight as your best pitch — built to convert visitors before your team ever gets on a call.",
-    gradient: "from-[#3a3428] via-[#1b1912] to-[#0c0a07]",
+    bg: "#222222",
+    fg: "#f2ede2",
+    tagFg: "#a39b8d",
   },
   {
     index: "02",
-    title: "Product & SaaS sites",
+    title: "Product & SaaS",
     tags: ["Pricing pages", "Docs", "Onboarding", "Integrations"],
     body: "Pricing pages, docs and onboarding flows that explain what your product does in the time it takes to scroll once.",
-    gradient: "from-[#2b3230] via-[#151714] to-[#0c0a07]",
+    bg: "#444444",
+    fg: "#f2ede2",
+    tagFg: "#b5a999",
   },
   {
     index: "03",
     title: "Commerce storefronts",
     tags: ["Product pages", "Checkout", "Inventory sync", "Performance"],
     body: "Fast, considered storefronts built on the platform that fits your catalogue, not the other way around.",
-    gradient: "from-[#332a2c] via-[#181314] to-[#0c0a07]",
+    bg: "#b0b0b0",
+    fg: "#0c0a07",
+    tagFg: "#4f4b43",
   },
   {
     index: "04",
     title: "Internal & partner portals",
     tags: ["Dashboards", "Access control", "Reporting", "Workflows"],
     body: "Dashboards and tools your team actually opens — scoped tightly, built to last past the first hire who requested them.",
-    gradient: "from-[#2d2a24] via-[#171510] to-[#0c0a07]",
+    bg: "#d4d4d4",
+    fg: "#0c0a07",
+    tagFg: "#8c8375",
+  },
+  {
+    index: "05",
+    title: "Branding",
+    tags: ["Logo", "Visual identity", "Guidelines", "Collateral"],
+    body: "Identities that hold up on a homepage, a pitch deck and a business card — one system, applied everywhere.",
+    bg: "#fafafa",
+    fg: "#0c0a07",
+    tagFg: "#928878",
   },
 ];
 
-export default function Services() {
+/** Shared horizontal padding — matches the Header so everything lines up. */
+const PAD_X = "pl-6 pr-6 md:pl-14 md:pr-10 xl:pl-24 xl:pr-16";
+
+const N = SERVICES.length;
+/** Scroll distance each band gets, in viewport heights. */
+const VH_PER_BAND = 0.75;
+/** Portion of the timeline before the first band / after the last one. */
+const START = 0.03;
+const END = 0.95;
+
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+const easeInOut = (t: number) =>
+  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+/** Eased 0→1 progress of band `i` on the shared timeline. */
+const bandProgress = (P: number, i: number) =>
+  easeInOut(clamp01(((P - START) / (END - START)) * N - i));
+
+function BandContent({
+  service,
+  isLast,
+}: {
+  service: Service;
+  isLast: boolean;
+}) {
   return (
-    <section
-      id="work"
-      aria-labelledby="services-heading"
-      className="border-t border-ink-line/70 bg-ink py-32 md:py-48"
+    <div
+      className={`${PAD_X} ${
+        isLast ? "pb-28 pt-14 md:pb-44 md:pt-[4.5rem]" : "py-14 md:py-[4.5rem]"
+      }`}
     >
-      <div className="container-x">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-10% 0px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="max-w-2xl"
+      <div className="grid items-center gap-x-10 gap-y-4 md:grid-cols-[9rem_1fr]">
+        <span
+          aria-hidden="true"
+          className="font-logo text-[clamp(2.75rem,4.4vw,4.25rem)] font-normal leading-none opacity-90"
         >
-          <p className="font-body text-sm tracking-wide text-mist">
-            What we build
-          </p>
-          <h2
-            id="services-heading"
-            className="mt-3 font-body text-4xl font-medium leading-tight text-linen md:text-[2.75rem]"
+          {service.index}
+        </span>
+
+        <div>
+          <h3 className="font-accent text-[clamp(1.75rem,2.7vw,2.5rem)] font-normal leading-tight">
+            <span className="sr-only">{service.index}. </span>
+            {service.title}
+          </h3>
+
+          <ul
+            className="mt-1.5 flex flex-wrap gap-x-2 font-body text-base md:text-[1.05rem]"
+            style={{ color: service.tagFg }}
           >
-            Four kinds of site. One standard.
-          </h2>
-          <p className="mt-5 max-w-sm font-body text-base leading-relaxed text-linen/70">
-            We keep a small roster of clients so every project gets the same
-            attention as the last one. If your work fits one of these, we're
-            likely a good match.
+            {service.tags.map((tag, i) => (
+              <li key={tag}>
+                {tag}
+                {i < service.tags.length - 1 ? "," : ""}
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-7 max-w-[40rem] font-body text-base leading-relaxed opacity-90 md:mt-9">
+            {service.body}
           </p>
-        </motion.div>
-
-        {/* Sticky stacking cards — each card catches at the top of the
-            viewport and the next one slides over it, layer by layer, as
-            you scroll. Only enabled at md+; mobile gets a plain stacked
-            list since the effect needs room to breathe. */}
-        <div className="relative mt-16 md:mt-24">
-          {SERVICES.map((service, i) => (
-            <div
-              key={service.title}
-              className="md:relative md:h-[78vh]"
-              style={{ zIndex: i + 1 }}
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 32 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-15% 0px" }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="mb-6 rounded-3xl border border-ink-line/70 bg-ink-soft px-6 py-10 shadow-[0_-24px_48px_-32px_rgba(0,0,0,0.7)] md:sticky md:top-24 md:mb-0 md:rounded-t-3xl md:rounded-b-none md:border-b-0 md:px-14 md:py-14"
-              >
-                <div className="grid gap-8 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-12">
-                  <span className="font-body text-2xl font-medium text-clay-dark md:text-3xl">
-                    {service.index}
-                  </span>
-
-                  <div>
-                    <h3 className="font-body text-2xl font-medium text-linen md:text-3xl">
-                      {service.title}
-                    </h3>
-                    <ul className="mt-3 flex flex-wrap gap-x-2 gap-y-1 font-body text-sm text-clay-dark/90">
-                      {service.tags.map((tag, idx) => (
-                        <li key={tag}>
-                          {tag}
-                          {idx < service.tags.length - 1 ? "," : ""}
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="mt-4 max-w-md font-body text-base leading-relaxed text-linen/70">
-                      {service.body}
-                    </p>
-                  </div>
-
-                  <div
-                    aria-hidden="true"
-                    className={`hidden h-40 w-56 shrink-0 rounded-2xl bg-gradient-to-br md:block ${service.gradient}`}
-                  />
-                </div>
-              </motion.div>
-            </div>
-          ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+function Intro() {
+  return (
+    <div className={`${PAD_X} pb-24 pt-32 md:pb-36 md:pt-44`}>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-10% 0px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <p className="font-accent text-base tracking-wide text-linen/55">
+          What we build
+        </p>
+        <h2
+          id="services-heading"
+          className="mt-6 max-w-[16ch] font-logo text-[clamp(2.25rem,3.6vw,3.25rem)] font-normal uppercase leading-[1.02] text-linen md:max-w-[22ch]"
+        >
+          Five kinds of work. One standard.
+        </h2>
+        <p className="mt-12 max-w-[24rem] font-body text-base leading-relaxed text-linen/85 md:mt-16">
+          We keep a small roster of clients so every project gets the same
+          attention as the last one. If your work fits one of these, we&apos;re
+          likely a good match.
+        </p>
+      </motion.div>
+    </div>
+  );
+}
+
+/** One band. Its slot grows from 0 to its natural height while the band
+ *  slides down inside it, so it always emerges from under the layer above. */
+function Band({
+  service,
+  index,
+  progress,
+  heights,
+}: {
+  service: Service;
+  index: number;
+  progress: MotionValue<number>;
+  heights: React.MutableRefObject<number[]>;
+}) {
+  const innerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = innerRef.current;
+    if (!el) return;
+    const measure = () => {
+      heights.current[index] = el.offsetHeight;
+      // nudge the scroll timeline so it re-reads the new height
+      window.dispatchEvent(new Event("scroll"));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [heights, index]);
+
+  const p = useTransform(progress, (P) => bandProgress(P, index));
+  const height = useTransform(p, (v) => v * (heights.current[index] || 0));
+  const y = useTransform(p, (v) => -(1 - v) * (heights.current[index] || 0));
+  // shadow cast by the layer above; fades as the band lands
+  const shadow = useTransform(p, (v) => (v > 0 ? 1 - v * 0.88 : 0));
+
+  return (
+    <motion.li className="relative overflow-hidden" style={{ height }}>
+      <motion.div
+        ref={innerRef}
+        style={{
+          y,
+          backgroundColor: service.bg,
+          color: service.fg,
+          willChange: "transform",
+        }}
+      >
+        <BandContent service={service} isLast={index === N - 1} />
+      </motion.div>
+      <motion.div
+        aria-hidden="true"
+        style={{ opacity: shadow }}
+        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-10 bg-gradient-to-b from-black/45 to-transparent"
+      />
+    </motion.li>
+  );
+}
+
+function PinnedServices() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const introRef = useRef<HTMLDivElement>(null);
+  const heights = useRef<number[]>(Array(N).fill(0));
+  const introH = useRef(0);
+  const stageH = useRef(0);
+
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start start", "end end"],
+  });
+
+  useEffect(() => {
+    const measure = () => {
+      introH.current = introRef.current?.offsetHeight ?? 0;
+      stageH.current = stageRef.current?.clientHeight ?? 0;
+      window.dispatchEvent(new Event("scroll"));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (introRef.current) ro.observe(introRef.current);
+    if (stageRef.current) ro.observe(stageRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  // Once the stack is taller than the screen, keep its bottom edge in view.
+  const stackY = useTransform(scrollYProgress, (P) => {
+    let total = introH.current;
+    for (let i = 0; i < N; i++) {
+      total += bandProgress(P, i) * (heights.current[i] || 0);
+    }
+    return Math.min(0, stageH.current - total);
+  });
+
+  return (
+    <div
+      ref={trackRef}
+      style={{ height: `${100 + N * VH_PER_BAND * 100}vh` }}
+      className="relative"
+    >
+      <div ref={stageRef} className="sticky top-0 h-screen overflow-hidden bg-ink">
+        <motion.div style={{ y: stackY, willChange: "transform" }}>
+          <div ref={introRef}>
+            <Intro />
+          </div>
+          <ol>
+            {SERVICES.map((service, i) => (
+              <Band
+                key={service.index}
+                service={service}
+                index={i}
+                progress={scrollYProgress}
+                heights={heights}
+              />
+            ))}
+          </ol>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+/** Reduced motion: plain, static stack — no pinning, no movement. */
+function StaticServices() {
+  return (
+    <>
+      <Intro />
+      <ol>
+        {SERVICES.map((service, i) => (
+          <li
+            key={service.index}
+            style={{ backgroundColor: service.bg, color: service.fg }}
+          >
+            <BandContent service={service} isLast={i === N - 1} />
+          </li>
+        ))}
+      </ol>
+    </>
+  );
+}
+
+export default function Services() {
+  const reduceMotion = useReducedMotion();
+  return (
+    <section id="work" aria-labelledby="services-heading" className="bg-ink">
+      {reduceMotion ? <StaticServices /> : <PinnedServices />}
     </section>
   );
 }

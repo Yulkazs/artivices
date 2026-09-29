@@ -1,63 +1,145 @@
-const CASES = [
+"use client";
+
+import { motion } from "framer-motion";
+
+type Case = {
+  name: string;
+  body: string;
+  /** path in /public, e.g. "/images/cases/halden.jpg". Empty → placeholder. */
+  image?: string;
+  href: string;
+};
+
+// Add more entries and each one renders as its own row.
+const CASES: Case[] = [
   {
-    client: "Halden & Fitch",
-    industry: "Private wealth advisory",
-    result: "Consultation requests up 3.2x within the first quarter.",
-    gradient: "from-[#3a3428] via-[#1b1912] to-[#0c0a07]",
-  },
-  {
-    client: "Coastal Freight Co.",
-    industry: "Logistics platform",
-    result: "Quote-to-booking time cut from four days to eleven minutes.",
-    gradient: "from-[#2b3230] via-[#151714] to-[#0c0a07]",
-  },
-  {
-    client: "Marchetti Studio",
-    industry: "Furniture & interiors",
-    result: "Wholesale enquiries overtook the showroom as the top channel.",
-    gradient: "from-[#332a2c] via-[#181314] to-[#0c0a07]",
+    name: "Company name",
+    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    href: "#",
   },
 ];
 
+const PAD_X = "pl-6 pr-6 md:pl-14 md:pr-10 xl:pl-24 xl:pr-24";
+
+function ImagePlaceholderIcon() {
+  return (
+    <svg
+      width="44"
+      height="44"
+      viewBox="0 0 44 44"
+      fill="none"
+      stroke="#fff"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="3" width="38" height="38" rx="6" />
+      <path d="M3 32l10-10 8 8 6-6 14 12" />
+      <circle cx="29" cy="14" r="0.6" fill="#fff" />
+    </svg>
+  );
+}
+
+function CaseRow({ item }: { item: Case }) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10% 0px" }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="relative flex flex-col gap-6 md:grid md:grid-cols-[36.5%_63.5%] md:gap-0"
+    >
+      {/* Title spans the whole row so it can run over the image */}
+      <h3 className="case-title order-1 whitespace-nowrap font-body text-[clamp(2.25rem,4.8vw,4.5rem)] font-light uppercase leading-none md:absolute md:left-0 md:top-8 md:z-10 md:w-full">
+        {item.name}
+      </h3>
+
+      <div className="order-2 aspect-[16/10] overflow-hidden rounded-2xl bg-[#9b9b9b] md:col-start-2 md:row-start-1 md:aspect-[1.76/1]">
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={`${item.name} website`}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <ImagePlaceholderIcon />
+          </div>
+        )}
+      </div>
+
+      <div className="order-3 flex flex-col md:col-start-1 md:row-start-1 md:pr-5 md:pt-[clamp(6.5rem,9vw,9rem)]">
+        <p className="font-body text-sm leading-relaxed text-ink/80 md:ml-auto md:max-w-[24rem] md:text-right md:text-base">
+          {item.body}
+        </p>
+        <a
+          href={item.href}
+          className="focus-ring mt-6 font-body text-base font-medium text-ink underline decoration-transparent decoration-1 underline-offset-8 transition-colors hover:decoration-ink md:ml-auto md:mt-auto md:pb-3"
+        >
+          View Case Study
+        </a>
+      </div>
+    </motion.article>
+  );
+}
+
 export default function CaseStudies() {
   return (
-    <section id="case-studies" className="border-t border-ink-line/70 bg-ink-soft py-24 md:py-32">
-      <div className="container-x">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <section
+      id="case-studies"
+      aria-labelledby="case-studies-heading"
+      className="relative overflow-hidden bg-[#fafafa] text-ink"
+    >
+      <div className={`${PAD_X} pt-8 md:pt-12`}>
+        {/* Heading row */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-10% 0px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
+        >
           <div>
-            <p className="font-body text-sm tracking-wide text-mist">Case studies</p>
-            <h2 className="mt-3 max-w-xl font-body font-medium text-4xl leading-tight text-linen md:text-[2.75rem]">
-              Recent work, and what it moved.
+            <p className="font-accent text-base tracking-wide text-[#8a8578]">
+              Case Studies
+            </p>
+            <h2
+              id="case-studies-heading"
+              className="mt-4 font-accent text-[clamp(2.25rem,3.4vw,3.25rem)] font-normal leading-[1.05]"
+            >
+              Recent work &amp;
+              <br className="hidden md:block" /> what it moved.
             </h2>
           </div>
-          <a
-            href="#contact"
-            className="focus-ring hidden font-body text-lg text-linen/80 underline decoration-clay-dark decoration-1 underline-offset-8 transition-colors hover:text-linen md:inline-block"
-          >
-            Discuss a similar project
-          </a>
-        </div>
+          <p className="max-w-[38rem] font-body text-base leading-relaxed text-[#75716a] md:pb-2 md:text-right md:text-[1.05rem]">
+            Explore a selection of websites we&apos;ve designed and built for
+            businesses across different industries. Each project is tailored to
+            reflect the client&apos;s brand, goals, and audience.
+          </p>
+        </motion.div>
 
-        <div className="mt-14 grid gap-8 md:grid-cols-3">
+        {/* Cases */}
+        <div className="mt-20 flex flex-col gap-24 md:mt-40 md:gap-36">
           {CASES.map((item) => (
-            <a
-              href="#contact"
-              key={item.client}
-              className="focus-ring group block overflow-hidden rounded-2xl border border-ink-line/70 bg-ink transition-colors hover:border-clay-dark/60"
-            >
-              <div
-                className={`aspect-[4/3] w-full bg-gradient-to-br ${item.gradient} transition-transform duration-500 group-hover:scale-[1.03]`}
-              />
-              <div className="p-6">
-                <p className="font-body font-medium text-2xl text-linen">{item.client}</p>
-                <p className="mt-1 font-body text-sm text-linen/55">{item.industry}</p>
-                <p className="mt-4 font-body text-base leading-relaxed text-linen/75">
-                  {item.result}
-                </p>
-              </div>
-            </a>
+            <CaseRow key={item.name} item={item} />
           ))}
         </div>
+      </div>
+
+      {/* Looper lines fading into the dark section below. The SVG is 1920px
+          wide with empty space at the top, so it's pinned to the bottom of a
+          fixed-height strip and the empty part is cropped off. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none relative mt-24 h-[clamp(16rem,30vw,28rem)] md:mt-32"
+      >
+        <img
+          src="/images/LooperGroup.svg"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-bottom"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink" />
       </div>
     </section>
   );

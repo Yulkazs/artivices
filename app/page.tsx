@@ -7,6 +7,7 @@ import Testimonial from "@/components/Testimonial";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import Statement from "@/components/Statement";
+import Pricing from "@/components/Pricing";
 
 export default function Home() {
   return (
@@ -19,7 +20,7 @@ export default function Home() {
         <CaseStudies />
         <Process />
         <Testimonial />
-        <CTA />
+        <Pricing />
       </main>
       <Footer />
     </>

@@ -13,9 +13,10 @@ import { useEffect, useState } from "react";
  *   navigations do not trigger it again.
  */
 
-const MIN_MS = 1500; // shortest time the loader stays on screen
-const MAX_MS = 8000; // safety net: always leave after this long
-const FADE_MS = 800; // must match the CSS transition below
+const MIN_MS = 1000; // shortest time the loader stays on screen
+const MAX_MS = 4000; // safety net: always leave after this long
+const FADE_MS = 600; // must match the CSS transition below
+const SEEN_KEY = "artivices-loader-seen"; // sessionStorage flag: loader already shown
 
 const INK = "#0a0804";
 
@@ -65,6 +66,9 @@ const CSS = `
 }
 .ldr-root.ldr-leaving { opacity: 0; visibility: hidden; }
 
+/* Returning visitors (same session): never show the loader at all */
+html.ldr-seen .ldr-root { display: none !important; }
+
 .ldr-logo {
   width: clamp(88px, 9vw, 136px);
   height: auto;
@@ -111,6 +115,15 @@ const CSS = `
 export default function Loader() {
   const [phase, setPhase] = useState<"loading" | "leaving" | "gone">("loading");
 
+  // Already seen this session? Skip the loader entirely.
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(SEEN_KEY)) setPhase("gone");
+    } catch {
+      /* storage blocked: just show the loader */
+    }
+  }, []);
+
   // Wait for the page (load event + fonts), respecting MIN_MS / MAX_MS.
   useEffect(() => {
     const start = performance.now();
@@ -121,6 +134,11 @@ export default function Loader() {
     const finish = () => {
       if (cancelled || finished) return;
       finished = true;
+      try {
+        sessionStorage.setItem(SEEN_KEY, "1");
+      } catch {
+        /* ignore */
+      }
       const wait = Math.max(0, MIN_MS - (performance.now() - start));
       timers.push(setTimeout(() => !cancelled && setPhase("leaving"), wait));
     };

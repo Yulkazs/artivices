@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   MotionValue,
@@ -101,6 +101,22 @@ const easeInOut = (t: number) =>
 /** Eased 0→1 progress of band `i` on the shared timeline. */
 const bandProgress = (P: number, i: number) =>
   easeInOut(clamp01(((P - START) / (END - START)) * N - i));
+
+/** Mobile browsers resize their viewport as the address bar hides/shows,
+ *  which fights with a scroll-pinned, height-measuring animation like this
+ *  one and is the source of the glitching seen on phones. Rather than
+ *  chase that, the pinned effect is desktop-only; phones get the plain
+ *  static stack below (same one reduced-motion already uses). */
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isDesktop;
+}
 
 function BandContent({
   service,
@@ -305,12 +321,16 @@ function StaticServices() {
       <Intro />
       <ol>
         {SERVICES.map((service, i) => (
-          <li
+          <motion.li
             key={service.index}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10% 0px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             style={{ backgroundColor: service.bg, color: service.fg }}
           >
             <BandContent service={service} isLast={i === N - 1} />
-          </li>
+          </motion.li>
         ))}
       </ol>
     </>
@@ -319,9 +339,10 @@ function StaticServices() {
 
 export default function Services() {
   const reduceMotion = useReducedMotion();
+  const isDesktop = useIsDesktop();
   return (
     <section id="work" aria-labelledby="services-heading" className="bg-ink">
-      {reduceMotion ? <StaticServices /> : <PinnedServices />}
+      {reduceMotion || !isDesktop ? <StaticServices /> : <PinnedServices />}
     </section>
   );
 }

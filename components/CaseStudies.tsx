@@ -7,17 +7,20 @@ type CaseStudy = {
   name: string;
   blurb: string;
   href: string;
+  date: string;
   image?: string;
 };
 
+
 const BLURB =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+const DATE = "September 2026";
 
 const CASE_STUDIES: CaseStudy[] = [
-  { name: "COMPANY NAME", blurb: BLURB, href: "/case-studies/one" },
-  { name: "COMPANY NAME", blurb: BLURB, href: "/case-studies/two" },
-  { name: "COMPANY NAME", blurb: BLURB, href: "/case-studies/three" },
-  { name: "COMPANY NAME", blurb: BLURB, href: "/case-studies/four" },
+  { name: "COMPANY NAME", blurb: BLURB, href: "/case-studies/one", date: DATE },
+  { name: "COMPANY NAME", blurb: BLURB, href: "/case-studies/two", date: DATE },
+  { name: "COMPANY NAME", blurb: BLURB, href: "/case-studies/three", date: DATE },
+  { name: "COMPANY NAME", blurb: BLURB, href: "/case-studies/four", date: DATE },
 ];
 
 const PANELS = CASE_STUDIES.length + 1;
@@ -41,24 +44,44 @@ function CaseStudyPanel({
   study: CaseStudy;
   hideOnMobile?: boolean;
 }) {
+  const ref = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
+
+  // Fade the texts in once this project is on screen (works for the horizontal
+  // desktop scroller too, since it observes the real on-screen position).
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const reveal = `transition duration-700 ease-out motion-reduce:transition-none ${
+    inView ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100"
+  }`;
+  const delay = (ms: number) => ({ transitionDelay: `${ms}ms` });
+
   return (
     <article
-      className={`relative w-full shrink-0 px-6 py-14 md:flex md:h-full md:w-screen md:items-center md:px-0 md:py-0 ${
+      ref={ref}
+      className={`relative w-full shrink-0 px-4 py-24 md:flex md:h-full md:w-screen md:items-center md:px-0 md:py-0 ${
         hideOnMobile ? "hidden" : ""
       }`}
     >
-      {/* Stage: every desktop position below is relative to this box (same geometry as the design) */}
-      <div className="relative w-full md:h-[min(32vw,72vh)]">
-        {/* Black title (sits BEHIND the card, so the card hides the overlapping part) */}
-        <h3
-          className="relative z-0 mb-6 whitespace-nowrap text-[11vw] font-light leading-none tracking-tight md:absolute md:left-[5vw] md:top-[3vw] md:mb-0 md:text-[5.2vw]"
-          style={{ color: INK, fontFamily: "inherit" }}
-        >
-          {study.name}
-        </h3>
-
+      {/* Stage: every desktop position below is relative to this box (same geometry as the design).
+          Mobile: plain column (card, title, blurb, link + date). */}
+      <div className="relative flex w-full flex-col md:block md:h-[min(32vw,72vh)]">
         {/* Card */}
-        <div className="relative z-10 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-2xl bg-[#9b9b9b] md:absolute md:left-[38vw] md:top-0 md:aspect-auto md:h-full md:w-[56vw]">
+        <div className="relative z-10 order-1 flex aspect-[5/4] w-full items-center justify-center overflow-hidden bg-[#9b9b9b] md:absolute md:left-[38vw] md:top-0 md:aspect-auto md:h-full md:w-[56vw] md:rounded-2xl">
           {study.image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={study.image} alt={study.name} className="h-full w-full object-cover" />
@@ -66,31 +89,51 @@ function CaseStudyPanel({
             <ImagePlaceholder />
           )}
 
-          {/* White copy of the title, clipped by the card: this is the "ME" in white */}
+          {/* White copy of the title, clipped by the card: this is the "ME" in white (desktop only) */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute hidden whitespace-nowrap font-light leading-none tracking-tight text-white md:block md:left-[-33vw] md:top-[3vw] md:text-[5.2vw]"
+            className={`pointer-events-none absolute hidden whitespace-nowrap font-light leading-none tracking-tight text-white md:block md:left-[-33vw] md:top-[3vw] md:text-[5.2vw] ${reveal}`}
+            style={delay(0)}
           >
             {study.name}
           </span>
         </div>
 
+        {/* Title (desktop: sits BEHIND the card, so the card hides the overlapping part) */}
+        <h3
+          className={`relative z-0 order-2 mt-10 whitespace-nowrap text-[7.3vw] font-light leading-none tracking-tight md:absolute md:left-[5vw] md:top-[3vw] md:mt-0 md:text-[5.2vw] ${reveal}`}
+          style={{ color: INK, fontFamily: "inherit", ...delay(0) }}
+        >
+          {study.name}
+        </h3>
+
         {/* Text column */}
-        <div className="mt-6 md:absolute md:left-[5vw] md:top-0 md:mt-0 md:flex md:h-full md:w-[31vw] md:flex-col md:pt-[11vw]">
+        <div className="order-3 mt-5 md:absolute md:left-[5vw] md:top-0 md:mt-0 md:flex md:h-full md:w-[31vw] md:flex-col md:pt-[11vw]">
           <p
-            className="ml-auto max-w-[26rem] text-right leading-relaxed md:max-w-none"
-            style={{ color: INK, fontSize: "clamp(11px, 0.85vw, 15px)" }}
+            className={`line-clamp-3 text-left text-base leading-relaxed md:ml-auto md:line-clamp-none md:max-w-none md:text-right md:text-[clamp(11px,0.85vw,15px)] ${reveal}`}
+            style={{ color: "rgba(10,8,4,0.7)", ...delay(150) }}
           >
             {study.blurb}
           </p>
-          <div className="mt-8 text-right md:mt-auto">
+
+          {/* Mobile: link left, date right. Desktop: date bottom-left, link bottom-right */}
+          <div
+            className={`mt-16 flex items-center justify-between md:mt-auto md:flex-row-reverse md:items-end ${reveal}`}
+            style={delay(300)}
+          >
             <Link
               href={study.href}
-              className="text-sm underline-offset-4 hover:underline"
+              className="text-xl underline-offset-4 hover:underline md:text-base"
               style={{ color: INK }}
             >
               View Case Study
             </Link>
+            <span
+              className="text-base md:text-[clamp(11px,0.85vw,15px)]"
+              style={{ color: "rgba(10,8,4,0.7)" }}
+            >
+              {study.date}
+            </span>
           </div>
         </div>
       </div>
@@ -178,7 +221,7 @@ export default function CaseStudies() {
   return (
     <section id="case-studies" className="relative w-full bg-[#fafafa]">
       {/* Intro row */}
-      <div className="flex w-full flex-col gap-6 px-6 pb-16 pt-24 md:flex-row md:items-end md:justify-between md:px-[5vw] md:pb-[6vw]">
+      <div className="flex w-full flex-col gap-6 px-4 pb-8 pt-24 md:flex-row md:items-end md:justify-between md:px-[5vw] md:pb-[6vw]">
         <div>
           <p className="mb-3 text-sm" style={{ color: "rgba(10,8,4,0.5)" }}>
             Case Studies
@@ -191,7 +234,7 @@ export default function CaseStudies() {
           </h2>
         </div>
         <p
-          className="max-w-md text-right text-sm leading-relaxed"
+          className="ml-auto max-w-[22rem] text-right text-base leading-relaxed md:ml-0 md:max-w-md md:text-sm"
           style={{ color: "rgba(10,8,4,0.6)" }}
         >
           Explore a selection of websites we&apos;ve designed and built for businesses across different

@@ -13,7 +13,23 @@ export default function Header() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-ink/80 via-ink/30 to-transparent" />
+      {/* Mobile: dark frosted glass behind the bar, fading out at the bottom edge.
+          Dark enough to keep the logo readable over the white Case Studies section. */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-x-0 top-0 h-28 bg-ink/75 backdrop-blur-lg transition-opacity duration-300 [-webkit-mask-image:linear-gradient(to_bottom,#000_70%,transparent)] [mask-image:linear-gradient(to_bottom,#000_70%,transparent)] md:hidden ${
+          open ? "opacity-0" : "opacity-100"
+        }`}
+      />
+      {/* Desktop: original soft top fade */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 hidden h-28 bg-gradient-to-b from-ink/80 via-ink/30 to-transparent md:block" />
+
+      {/* One shared glass surface for bar + menu, so there is no seam between them */}
+      <div
+        className={`relative transition-colors duration-300 md:bg-transparent md:backdrop-blur-none ${
+          open ? "bg-ink/90 backdrop-blur-xl" : "bg-transparent"
+        }`}
+      >
       <div className="relative flex h-20 items-center justify-between pl-6 pr-6 md:h-24 md:pl-14 md:pr-10 xl:pl-24 xl:pr-16">
         <a
           href="#top"
@@ -67,8 +83,9 @@ export default function Header() {
         </button>
       </div>
 
+      {/* Mobile menu panel (glass comes from the wrapper above) */}
       <div
-        className={`overflow-hidden bg-ink/98 backdrop-blur transition-[max-height] duration-300 ease-in-out md:hidden ${
+        className={`overflow-hidden transition-[max-height] duration-300 ease-in-out md:hidden ${
           open ? "max-h-80" : "max-h-0"
         }`}
       >
@@ -91,6 +108,7 @@ export default function Header() {
             Get Started
           </a>
         </nav>
+      </div>
       </div>
     </header>
   );

@@ -404,7 +404,7 @@ export default function Testimonial() {
           transition={{ duration: 0.8, ease: EASE }}
         >
           Proof that{" "}
-          <span className="font-logo text-[1.15em]">Speaks</span> volumes
+          <span className="font-logo">Speaks</span> volumes
         </motion.h2>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-12 md:grid-rows-[repeat(2,minmax(0,1fr))] md:gap-4">
@@ -455,9 +455,9 @@ export default function Testimonial() {
           {/* Metrics */}
           <motion.div
             {...tile(2)}
-            className="flex flex-col rounded-2xl bg-ink-soft p-7 md:col-span-4 md:row-span-2 md:p-8 lg:col-span-5"
+            className="order-last flex flex-col rounded-2xl bg-[#22201E] p-7 md:order-none md:col-span-4 md:row-span-2 md:p-8 lg:col-span-5"
           >
-            <h3 className="font-body text-lg leading-snug text-linen/90 md:text-xl">
+            <h3 className="font-body text-lg leading-snug text-linen/90 md:text-2xl">
               Metrics that{" "}
               <span className="font-logo text-[1.15em]">Prove</span>
               <br />
@@ -486,7 +486,7 @@ export default function Testimonial() {
           {/* Clients */}
           <motion.div
             {...tile(3)}
-            className="min-h-[200px] rounded-2xl bg-ink-soft p-7 md:col-span-4 md:min-h-0 md:p-8 lg:col-span-3"
+            className="min-h-[200px] rounded-2xl bg-[#22201E] p-7 md:col-span-4 md:min-h-0 md:p-8 lg:col-span-3"
           >
             <ClientsCard inView={inView} index={index} onSelect={goTo} />
           </motion.div>

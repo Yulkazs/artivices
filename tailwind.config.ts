@@ -21,6 +21,7 @@ const config: Config = {
           light: "#ddd3bf",
         },
         mist: "#9aa1ad",
+        card: "#22201E",
       },
       fontFamily: {
         logo: ["var(--font-logo)", "serif"],

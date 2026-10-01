@@ -619,7 +619,7 @@ export default function Pricing() {
               transition={{ duration: 0.8, ease: EASE }}
             >
               Pricing that{" "}
-              <span className="font-display text-[1.15em]">scales</span> with
+              <span className="font-logo text-[1.15em]">scales</span> with
               you
             </motion.h2>
             <motion.p

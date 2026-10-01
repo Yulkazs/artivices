@@ -404,7 +404,7 @@ export default function Testimonial() {
           transition={{ duration: 0.8, ease: EASE }}
         >
           Proof that{" "}
-          <span className="font-display text-[1.15em]">Speaks</span> volumes
+          <span className="font-logo text-[1.15em]">Speaks</span> volumes
         </motion.h2>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-12 md:grid-rows-[repeat(2,minmax(0,1fr))] md:gap-4">
@@ -459,7 +459,7 @@ export default function Testimonial() {
           >
             <h3 className="font-body text-lg leading-snug text-linen/90 md:text-xl">
               Metrics that{" "}
-              <span className="font-display text-[1.15em]">Prove</span>
+              <span className="font-logo text-[1.15em]">Prove</span>
               <br />
               value
             </h3>

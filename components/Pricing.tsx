@@ -16,9 +16,14 @@ import {
   useReducedMotion,
 } from "framer-motion";
 
+/* Where every "Start with …" and "Discuss your project" button goes.
+   Switch to "/contact" once that page exists. */
+const CONTACT_HREF = "#contact";
+
 type Tier = {
   name: string;
-  meta: string;
+  pages?: string; // shown as the first line of "What you get"
+  meta?: string; // small subtitle under the name (when there is no page count)
   prefix?: string;
   from: number;
   to?: number;
@@ -26,16 +31,15 @@ type Tier = {
   popular?: boolean;
   idealFor?: string[]; // maps to the "What we build" section
   features?: string[];
-  copyright?: { included: boolean; note: string };
 };
 
 const WEBSITE: Tier[] = [
   {
     name: "Starter",
-    meta: "1–4 pages",
+    pages: "1–4 pages",
     from: 1000,
     to: 1500,
-    idealFor: ["Landing pages", "Small brand sites"],
+    idealFor: ["Landing Pages", "Small Brand Sites"],
     features: [
       "Custom design",
       "Responsive",
@@ -44,18 +48,14 @@ const WEBSITE: Tier[] = [
       "Cookie & privacy basics",
       "2 revision rounds",
     ],
-    copyright: {
-      included: false,
-      note: "Stays with the studio. Transfer to your company is available for an additional fee.",
-    },
   },
   {
     name: "Business",
-    meta: "5–8 pages",
+    pages: "5–8 pages",
     from: 1750,
     to: 2750,
     popular: true,
-    idealFor: ["Brand websites"],
+    idealFor: ["Brand Websites"],
     features: [
       "Custom design",
       "Responsive",
@@ -65,17 +65,13 @@ const WEBSITE: Tier[] = [
       "Google Analytics & Search Console",
       "2–3 revision rounds",
     ],
-    copyright: {
-      included: false,
-      note: "Stays with the studio. Optional transfer to your company for a small fee.",
-    },
   },
   {
     name: "Professional",
-    meta: "9–15 pages",
+    pages: "9–15 pages",
     from: 3000,
     to: 4500,
-    idealFor: ["Brand websites", "Product & SaaS"],
+    idealFor: ["Brand Websites", "Product & SaaS"],
     features: [
       "Fully custom design",
       "Advanced animations & interactions",
@@ -85,29 +81,10 @@ const WEBSITE: Tier[] = [
       "Conversion optimization",
       "3 revision rounds",
     ],
-    copyright: {
-      included: true,
-      note: "Transferred to your company as standard.",
-    },
-  },
-  {
-    name: "Custom",
-    meta: "15+ pages",
-    prefix: "from",
-    from: 4500,
-    idealFor: ["Commerce storefronts", "Internal & partner portals"],
-    features: [
-      "Commerce: product pages, checkout & inventory sync",
-      "Portals: dashboards, access control & reporting",
-      "Product & SaaS: docs, onboarding & integrations",
-      "Scope and quote defined together",
-    ],
-    copyright: {
-      included: true,
-      note: "Transferred to your company as standard.",
-    },
   },
 ];
+
+const CUSTOM = { name: "Custom", from: 4500 };
 
 const BRANDING: Tier[] = [
   {
@@ -127,7 +104,7 @@ const BRANDING: Tier[] = [
     ],
   },
   {
-    name: "Business",
+    name: "Identity",
     meta: "Visual identity & essentials",
     from: 350,
     to: 500,
@@ -140,12 +117,12 @@ const BRANDING: Tier[] = [
     ],
   },
   {
-    name: "Professional",
+    name: "Signature",
     meta: "Complete brand system",
     from: 750,
     to: 1000,
     features: [
-      "Everything in Business",
+      "Everything in Identity",
       "Complete visual identity",
       "Brand guidelines document",
       "Extended collateral set",
@@ -204,6 +181,14 @@ type TabId = (typeof TABS)[number]["id"];
 const EASE = [0.22, 1, 0.36, 1] as const;
 const fmt = (n: number) => n.toLocaleString("en-US");
 
+/* Design colors for the package cards */
+const FEATURED_BG =
+  "linear-gradient(165deg, #d9d9d9 0%, #cfcbc8 30%, #c4bab3 58%, #b3a89b 100%)";
+
+/* -------------------------------------------------------------------------- */
+/*  Helpers                                                                   */
+/* -------------------------------------------------------------------------- */
+
 function CountUp({ to, delay = 0 }: { to: number; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
@@ -255,32 +240,25 @@ function Card({
     <motion.div
       onMouseMove={onMove}
       initial={reduce ? false : { opacity: 0, y: 28 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={reduce ? undefined : { opacity: 0, y: -12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 0.7, ease: EASE, delay: index * 0.09 }}
-      className={`group relative overflow-hidden rounded-2xl border p-7 transition-colors duration-500 md:p-8 ${
+      style={featured ? { backgroundImage: FEATURED_BG } : undefined}
+      className={`group relative overflow-hidden rounded-2xl border p-6 transition-colors duration-500 md:p-7 ${
         featured
-          ? "border-clay/60 bg-gradient-to-b from-clay/[0.12] to-ink-soft hover:border-clay"
-          : "border-ink-line bg-ink-soft hover:border-clay/40"
+          ? "border-[#d9d9d9] text-ink"
+          : "border-[#d9d9d9]/80 text-[#d9d9d9] hover:border-clay"
       } ${className}`}
     >
-      {/* featured: slow breathing glow */}
-      {featured && !reduce && (
-        <motion.span
-          aria-hidden
-          className="pointer-events-none absolute -top-24 left-1/2 h-48 w-64 -translate-x-1/2 rounded-full bg-clay/25 blur-3xl"
-          animate={{ opacity: [0.35, 0.8, 0.35] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        />
-      )}
-
       {/* cursor spotlight */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 text-clay opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 ${
+          featured ? "text-white" : "text-clay"
+        }`}
         style={{
           background:
-            "radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, currentColor 14%, transparent), transparent 60%)",
+            "radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, currentColor 18%, transparent), transparent 60%)",
         }}
       />
       <div className="relative flex h-full flex-col">{children}</div>
@@ -291,37 +269,33 @@ function Card({
 function PopularBadge() {
   return (
     <motion.span
-      initial={{ opacity: 0, scale: 0.8, y: -6 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.5, type: "spring", stiffness: 300, damping: 20 }}
-      className="absolute right-0 top-0 inline-flex items-center gap-1.5 rounded-full bg-clay px-3 py-1 font-body text-xs font-medium text-ink"
+      className="shrink-0 rounded-full bg-[#ADA092] px-4 py-1.5 font-body text-sm text-ink"
     >
-      <svg viewBox="0 0 24 24" className="h-3 w-3 fill-current" aria-hidden>
-        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-      </svg>
-      Most popular
+      Most Popular
     </motion.span>
   );
 }
 
 function Price({ tier, delay = 0 }: { tier: Tier; delay?: number }) {
   return (
-    <div>
-      <div className="flex items-baseline gap-2 text-linen">
-        {tier.prefix && (
-          <span className="font-body text-sm text-linen-dim">{tier.prefix}</span>
-        )}
-        <span className="font-body text-4xl font-light md:text-5xl">
-          €<CountUp to={tier.from} delay={delay} />
-        </span>
-        {tier.unit && (
-          <span className="font-body text-sm text-linen-dim">{tier.unit}</span>
-        )}
-      </div>
+    <div className="flex flex-wrap items-baseline gap-x-2">
+      {tier.prefix && (
+        <span className="font-body text-sm opacity-60">{tier.prefix}</span>
+      )}
+      <span
+        className="font-body text-4xl font-light md:text-5xl"
+        style={{ textShadow: "0 6px 12px rgba(0,0,0,0.22)" }}
+      >
+        €<CountUp to={tier.from} delay={delay} />
+      </span>
       {tier.to && (
-        <p className="mt-1 font-body text-sm text-linen-dim">
-          up to €{fmt(tier.to)}
-        </p>
+        <span className="font-body text-sm opacity-60">– €{fmt(tier.to)}</span>
+      )}
+      {tier.unit && (
+        <span className="font-body text-sm opacity-60">{tier.unit}</span>
       )}
     </div>
   );
@@ -353,105 +327,151 @@ const itemVariants = {
   show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: EASE } },
 };
 
-function FeatureList({ items }: { items: string[] }) {
+function PlainList({
+  items,
+  featured,
+}: {
+  items: string[];
+  featured: boolean;
+}) {
   return (
     <motion.ul
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.3 }}
       variants={listVariants}
-      className="mt-7 space-y-3 border-t border-ink-line pt-6 font-body text-sm text-linen/80"
+      className={`mt-5 space-y-2.5 font-body text-sm md:text-base ${
+        featured ? "text-ink/90" : "text-[#d9d9d9]/80"
+      }`}
     >
       {items.map((f) => (
-        <motion.li key={f} variants={itemVariants} className="flex gap-2.5">
-          <Check />
-          <span>{f}</span>
+        <motion.li key={f} variants={itemVariants}>
+          {f}
         </motion.li>
       ))}
     </motion.ul>
   );
 }
 
-function CopyrightNote({
-  included,
-  note,
+function StartButton({
+  name,
+  featured,
+  label,
 }: {
-  included: boolean;
-  note: string;
+  name: string;
+  featured: boolean;
+  label?: string;
 }) {
   return (
-    <div
-      className={`mt-auto rounded-xl border p-3.5 ${
-        included
-          ? "border-clay/40 bg-clay/[0.08]"
-          : "border-ink-line bg-ink/60"
+    <Link
+      href={CONTACT_HREF}
+      className={`group/cta relative flex w-full items-center justify-between rounded-lg py-3.5 pl-6 pr-4 font-body text-base transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay md:text-lg ${
+        featured
+          ? "bg-[#57534a] text-[#d9d9d9] hover:bg-[#46433b]"
+          : "bg-[#d9d9d9]/10 text-[#d9d9d9] hover:bg-[#d9d9d9]/20"
       }`}
     >
-      <div className="mb-1.5 flex items-center justify-between">
-        <span className="flex items-center gap-1.5 font-body text-xs font-medium uppercase tracking-wider text-linen/90">
-          <span
-            aria-hidden
-            className="flex h-4 w-4 items-center justify-center rounded-full border border-current text-[9px] leading-none"
-          >
-            c
-          </span>
-          Copyright
-        </span>
-        {included && (
-          <span className="font-body text-[11px] text-clay">Included</span>
-        )}
-      </div>
-      <p className="font-body text-xs leading-relaxed text-linen-dim">{note}</p>
-    </div>
+      <span
+        aria-hidden
+        className={`absolute left-2 top-1/2 h-[68%] w-[2px] -translate-y-1/2 rounded-full transition-transform duration-300 group-hover/cta:scale-y-125 ${
+          featured ? "bg-[#d9d9d9]/80" : "bg-[#ADA092]"
+        }`}
+      />
+      <span>{label ?? `Start with ${name}`}</span>
+      <svg
+        aria-hidden
+        viewBox="0 0 16 16"
+        className="h-5 w-5 transition-transform duration-300 group-hover/cta:translate-x-1"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M6 3l5 5-5 5" />
+      </svg>
+    </Link>
   );
 }
 
-function TierCard({ tier, index }: { tier: Tier; index: number }) {
-  return (
-    <Card index={index} featured={tier.popular}>
-      {tier.popular && <PopularBadge />}
+/* -------------------------------------------------------------------------- */
+/*  Panels                                                                    */
+/* -------------------------------------------------------------------------- */
 
-      <div className="mb-8">
-        <h3 className="font-body text-xl text-linen">{tier.name}</h3>
-        <p className="mt-1 font-body text-sm text-linen-dim">{tier.meta}</p>
+function TierCard({
+  tier,
+  index,
+  className = "",
+}: {
+  tier: Tier;
+  index: number;
+  className?: string;
+}) {
+  const featured = !!tier.popular;
+  const items = [tier.pages, ...(tier.features ?? [])].filter(
+    Boolean,
+  ) as string[];
+
+  return (
+    <Card index={index} featured={featured} className={className}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="font-logo text-3xl leading-none md:text-4xl">
+            {tier.name}
+          </h3>
+          {tier.meta && (
+            <p className="mt-2 font-body text-sm opacity-60">{tier.meta}</p>
+          )}
+        </div>
+        {featured && <PopularBadge />}
       </div>
 
-      <Price tier={tier} delay={index * 0.09} />
+      <div className="mt-12 md:mt-14">
+        <Price tier={tier} delay={index * 0.09} />
 
-      {tier.idealFor && (
-        <div className="mt-6">
-          <p className="mb-2 font-body text-[11px] uppercase tracking-wider text-linen-faint">
-            Ideal for
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {tier.idealFor.map((t) => (
-              <span
-                key={t}
-                className="rounded-full border border-ink-line px-2.5 py-1 font-body text-xs text-linen/80"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+        {tier.idealFor && (
+          <>
+            <p className="mt-6 font-body text-sm opacity-70 md:text-base">
+              Ideal for
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {tier.idealFor.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border border-current px-4 py-1.5 font-body text-sm"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
 
-      {tier.features && <FeatureList items={tier.features} />}
+      <div className="mt-12">
+        <h4 className="font-body text-lg font-medium md:text-xl">
+          What you get
+        </h4>
+        <PlainList items={items} featured={featured} />
+      </div>
 
-      {tier.copyright && (
-        <div className="mt-7 flex flex-1 flex-col justify-end">
-          <CopyrightNote {...tier.copyright} />
-        </div>
-      )}
+      <div className="mt-auto pt-10">
+        <StartButton name={tier.name} featured={featured} />
+      </div>
     </Card>
   );
 }
 
 function WebsitePanel() {
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
       {WEBSITE.map((t, i) => (
-        <TierCard key={t.name} tier={t} index={i} />
+        <TierCard
+          key={t.name}
+          tier={t}
+          index={i}
+          className={i === 2 ? "md:col-span-2 lg:col-span-1" : ""}
+        />
       ))}
     </div>
   );
@@ -472,21 +492,23 @@ function CarePanel() {
     <div className="grid grid-cols-1 gap-3 md:grid-cols-12 md:gap-4">
       <Card index={0} className="md:col-span-8">
         <div className="mb-8">
-          <h3 className="font-body text-xl text-linen">Hosting + Care</h3>
-          <p className="mt-1 max-w-[46ch] font-body text-sm text-linen-dim">
+          <h3 className="font-logo text-3xl leading-none md:text-4xl">
+            Hosting + Care
+          </h3>
+          <p className="mt-3 max-w-[46ch] font-body text-sm opacity-70">
             Fully managed hosting, maintenance and security, so your website
             stays fast, secure and up to date.
           </p>
         </div>
 
-        <Price tier={{ name: "Care", meta: "", from: 50, unit: "/ month" }} />
+        <Price tier={{ name: "Care", from: 50, unit: "/ month" }} />
 
         <motion.ul
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
           variants={listVariants}
-          className="mt-7 grid gap-x-8 gap-y-5 border-t border-ink-line pt-6 sm:grid-cols-2"
+          className="mt-7 grid gap-x-8 gap-y-5 border-t border-[#d9d9d9]/20 pt-6 sm:grid-cols-2"
         >
           {CARE_FEATURES.map((f) => (
             <motion.li
@@ -496,10 +518,8 @@ function CarePanel() {
             >
               <Check />
               <span>
-                <span className="block font-body text-sm text-linen">
-                  {f.title}
-                </span>
-                <span className="block font-body text-xs leading-relaxed text-linen-dim">
+                <span className="block font-body text-sm">{f.title}</span>
+                <span className="block font-body text-xs leading-relaxed opacity-60">
                   {f.desc}
                 </span>
               </span>
@@ -507,95 +527,141 @@ function CarePanel() {
           ))}
         </motion.ul>
 
-        <p className="mt-7 border-t border-ink-line pt-5 font-body text-xs text-linen-dim">
+        <p className="mt-7 border-t border-[#d9d9d9]/20 pt-5 font-body text-xs opacity-60">
           Every website includes thirty days of support after go-live.
         </p>
       </Card>
 
       <Card index={1} className="md:col-span-4">
         <div className="mb-8">
-          <h3 className="font-body text-xl text-linen">Hosting only</h3>
-          <p className="mt-1 font-body text-sm text-linen-dim">
+          <h3 className="font-logo text-3xl leading-none md:text-4xl">
+            Hosting only
+          </h3>
+          <p className="mt-3 font-body text-sm opacity-70">
             Managed hosting for teams that handle site maintenance themselves.
           </p>
         </div>
 
-        <div className="flex items-baseline gap-2 text-linen">
-          <span className="font-body text-4xl font-light md:text-5xl">
+        <div className="flex flex-wrap items-baseline gap-x-2">
+          <span
+            className="font-body text-4xl font-light md:text-5xl"
+            style={{ textShadow: "0 6px 12px rgba(0,0,0,0.22)" }}
+          >
             €<CountUp to={20} delay={0.1} />
           </span>
-          <span className="font-body text-sm text-linen-dim">
-            – €30 / month
-          </span>
+          <span className="font-body text-sm opacity-60">– €30 / month</span>
         </div>
 
-        <FeatureList items={["Fast, reliable hosting", "SSL certificate"]} />
+        <motion.ul
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={listVariants}
+          className="mt-7 space-y-2.5 border-t border-[#d9d9d9]/20 pt-6 font-body text-sm"
+        >
+          {["Fast, reliable hosting", "SSL certificate"].map((f) => (
+            <motion.li key={f} variants={itemVariants} className="flex gap-2.5">
+              <Check />
+              <span>{f}</span>
+            </motion.li>
+          ))}
+        </motion.ul>
       </Card>
     </div>
   );
 }
 
-function ContactCard() {
+/* -------------------------------------------------------------------------- */
+/*  Contact card                                                              */
+/* -------------------------------------------------------------------------- */
+
+function NotSureCard({ compact }: { compact: boolean }) {
   const reduce = useReducedMotion();
 
   return (
     <motion.div
       initial={reduce ? false : { opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
+      viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.8, ease: EASE }}
-      className="relative mt-3 overflow-hidden rounded-2xl border border-ink-line bg-ink-soft p-7 md:mt-4 md:p-10"
+      className="flex rounded-3xl bg-[#22201E] p-7 md:p-10"
     >
-      {/* drifting glow */}
-      {!reduce && (
-        <motion.span
-          aria-hidden
-          className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-clay/20 blur-3xl"
-          animate={{ x: [0, -40, 0], y: [0, 30, 0], opacity: [0.4, 0.8, 0.4] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-        />
-      )}
-
-      <div className="relative flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-        <div className="max-w-[52ch]">
+      <div
+        className={`flex w-full flex-col gap-8 ${
+          compact
+            ? "justify-between"
+            : "md:flex-row md:items-center md:justify-between md:gap-12"
+        }`}
+      >
+        <div className="max-w-[58ch]">
           <h3 className="font-body text-2xl text-linen md:text-3xl">
             Not sure which package fits?
           </h3>
-          <p className="mt-3 font-body text-sm leading-relaxed text-linen/70 md:text-base">
+          <p className="mt-5 font-body text-base leading-relaxed text-linen/90 md:mt-8 md:text-lg md:leading-relaxed">
             Every project is different, and so is every budget. Our prices are
             a starting point and always open for discussion. Tell us about your
             project and we&apos;ll shape a proposal around it.
           </p>
         </div>
 
-        <div className="flex shrink-0 flex-col items-start gap-3">
-          <Link
-            href="/contact"
-            className="group/cta inline-flex items-center gap-2.5 rounded-full bg-clay px-6 py-3 font-body text-sm font-medium text-ink transition-transform duration-300 hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+        <Link
+          href={CONTACT_HREF}
+          className="group/cta inline-flex shrink-0 items-center justify-center gap-3 self-start rounded-full bg-[#ADA092] px-7 py-3.5 font-body text-base text-ink transition-all duration-300 hover:bg-clay-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay md:px-8 md:py-4 md:text-lg"
+        >
+          Discuss your project
+          <svg
+            aria-hidden
+            viewBox="0 0 16 16"
+            className="h-5 w-5 transition-transform duration-300 group-hover/cta:-translate-y-0.5 group-hover/cta:translate-x-0.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            Discuss your project
-            <span
-              aria-hidden
-              className="transition-transform duration-300 group-hover/cta:translate-x-1"
-            >
-              →
-            </span>
-          </Link>
-          <p className="font-body text-xs text-linen-dim">
-            Or email{" "}
-            <a
-              href="mailto:studio@artivices.com"
-              className="text-linen underline-offset-4 hover:underline"
-            >
-              studio@artivices.com
-            </a>{" "}
-            · We reply within two working days.
-          </p>
-        </div>
+            <path d="M4 12L12 4M5.5 4H12v6.5" />
+          </svg>
+        </Link>
       </div>
     </motion.div>
   );
 }
+
+function CustomCard() {
+  return (
+    <Card index={3} className="md:p-10">
+      <h3 className="font-logo text-3xl leading-none md:text-4xl">
+        {CUSTOM.name}
+      </h3>
+
+      <div className="mt-8">
+        <Price
+          tier={{ name: CUSTOM.name, prefix: "from", from: CUSTOM.from }}
+          delay={0.3}
+        />
+      </div>
+
+      <p className="mt-6 max-w-[48ch] font-body text-sm leading-relaxed opacity-75 md:text-base md:leading-relaxed">
+        Need more than the packages above? Whether you need extra pages,
+        specific features or a larger scope, we&apos;ll build a custom quote
+        around your project. Tell us what you have in mind and we&apos;ll come
+        back with a clear proposal.
+      </p>
+
+      <div className="mt-auto pt-10">
+        <StartButton
+          name={CUSTOM.name}
+          featured={false}
+          label="Contact us for a custom quote"
+        />
+      </div>
+    </Card>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Section                                                                   */
+/* -------------------------------------------------------------------------- */
 
 export default function Pricing() {
   const ref = useRef<HTMLElement>(null);
@@ -636,7 +702,7 @@ export default function Pricing() {
           <motion.div
             role="tablist"
             aria-label="Pricing categories"
-            className="flex w-full gap-1 self-start rounded-full border border-ink-line bg-ink-soft p-1 md:w-auto"
+            className="flex w-full gap-1 self-start rounded-full border border-ink-line bg-[#22201E] p-1 md:w-auto"
             initial={reduce ? false : { opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.8, ease: EASE, delay: 0.15 }}
@@ -656,7 +722,7 @@ export default function Pricing() {
                   {active && (
                     <motion.span
                       layoutId="pricing-pill"
-                      className="absolute inset-0 rounded-full bg-clay"
+                      className="absolute inset-0 rounded-full bg-[#ADA092]"
                       transition={{ type: "spring", stiffness: 380, damping: 32 }}
                     />
                   )}
@@ -667,6 +733,8 @@ export default function Pricing() {
           </motion.div>
         </div>
 
+        {/* Panels are always in the HTML (good for SEO); each card reveals
+            itself as it scrolls into view. */}
         <div role="tabpanel">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -676,14 +744,23 @@ export default function Pricing() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
-              {inView && tab === "website" && <WebsitePanel />}
-              {inView && tab === "branding" && <BrandingPanel />}
-              {inView && tab === "care" && <CarePanel />}
+              {tab === "website" && <WebsitePanel />}
+              {tab === "branding" && <BrandingPanel />}
+              {tab === "care" && <CarePanel />}
             </motion.div>
           </AnimatePresence>
         </div>
 
-        <ContactCard />
+        {tab === "website" ? (
+          <div className="mt-3 grid grid-cols-1 gap-3 md:mt-4 md:grid-cols-2 md:gap-4">
+            <NotSureCard compact />
+            <CustomCard />
+          </div>
+        ) : (
+          <div className="mt-3 md:mt-4">
+            <NotSureCard compact={false} />
+          </div>
+        )}
       </div>
     </section>
   );

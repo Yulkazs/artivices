@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import {
   AnimatePresence,
   motion,
@@ -225,11 +226,16 @@ function ClientsCard({
   );
 }
 
-function Avatar() {
+/* Photo avatar for the chat. Files live in /public/images/. */
+function Avatar({ src }: { src: string }) {
   return (
-    <span
+    <Image
+      src={src}
+      alt=""
       aria-hidden
-      className="h-8 w-8 shrink-0 rounded-full bg-[#d9d9d9] md:h-9 md:w-9"
+      width={96}
+      height={96}
+      className="h-9 w-9 shrink-0 rounded-full object-cover md:h-10 md:w-10"
     />
   );
 }
@@ -254,14 +260,28 @@ function TypingDots() {
   );
 }
 
+/* Two chats that play one after the other, on a loop. */
+const CHATS = [
+  {
+    customer: "Hey there, I could use some help!",
+    employee: "Of course! How can I help you?",
+  },
+  {
+    customer: "Can you update the text on our homepage?",
+    employee: "Sure, I'll take care of it right away.",
+  },
+];
+
 function ChatCard({ active }: { active: boolean }) {
   const reduce = useReducedMotion();
-  // 0 idle · 1 typing #1 · 2 msg #1 · 3 typing #2 · 4 msg #2
+  const [chat, setChat] = useState(0);
+  // 0 idle · 1 typing customer · 2 customer msg · 3 typing employee · 4 employee msg
   const [step, setStep] = useState(0);
 
   useEffect(() => {
     if (!active) return;
     if (reduce) {
+      setChat(0);
       setStep(4);
       return;
     }
@@ -270,19 +290,26 @@ function ChatCard({ active }: { active: boolean }) {
     const at = (ms: number, fn: () => void) =>
       timers.push(window.setTimeout(fn, ms));
 
+    let i = 0;
     const play = () => {
+      setChat(i);
       setStep(0);
       at(900, () => setStep(1));
       at(1900, () => setStep(2));
       at(2900, () => setStep(3));
       at(4000, () => setStep(4));
-      at(9500, () => setStep(0)); // hold, then clear the chat
-      at(11000, play); // pause, then replay
+      at(9000, () => setStep(0)); // hold, then clear the chat
+      at(10400, () => {
+        i = (i + 1) % CHATS.length; // next conversation
+        play();
+      });
     };
     play();
 
     return () => timers.forEach((t) => window.clearTimeout(t));
   }, [active, reduce]);
+
+  const { customer, employee } = CHATS[chat];
 
   const typingFirst = step === 1;
   const showFirst = step >= 2;
@@ -290,7 +317,7 @@ function ChatCard({ active }: { active: boolean }) {
   const showSecond = step >= 4;
 
   const bubble =
-    "rounded-2xl bg-[#e4e4e4] px-3 py-1.5 font-body text-xs text-[#0c0a07]";
+    "max-w-[13rem] rounded-2xl bg-[#e4e4e4] px-3 py-1.5 font-body text-xs leading-snug text-[#0c0a07]";
 
   return (
     <div className="flex h-full flex-col justify-between gap-6">
@@ -304,10 +331,11 @@ function ChatCard({ active }: { active: boolean }) {
       </div>
 
       <div
-        className="flex min-h-[110px] flex-col gap-3"
+        className="flex min-h-[132px] flex-col gap-3"
         aria-label="Support chat preview"
       >
-        <div className="flex min-h-[36px] items-end">
+        {/* Customer */}
+        <div className="flex min-h-[48px] items-end">
           <AnimatePresence>
             {(typingFirst || showFirst) && (
               <motion.div
@@ -319,16 +347,17 @@ function ChatCard({ active }: { active: boolean }) {
                 transition={{ duration: 0.4, ease: EASE }}
                 style={{ transformOrigin: "left bottom" }}
               >
-                <Avatar />
+                <Avatar src="/images/avatar-customer.webp" />
                 <div className={`${bubble} rounded-bl-sm`}>
-                  {typingFirst ? <TypingDots /> : "Hey there!"}
+                  {typingFirst ? <TypingDots /> : customer}
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        <div className="flex min-h-[36px] items-end justify-end">
+        {/* Employee */}
+        <div className="flex min-h-[48px] items-end justify-end">
           <AnimatePresence>
             {(typingSecond || showSecond) && (
               <motion.div
@@ -341,9 +370,9 @@ function ChatCard({ active }: { active: boolean }) {
                 style={{ transformOrigin: "right bottom" }}
               >
                 <div className={`${bubble} rounded-br-sm`}>
-                  {typingSecond ? <TypingDots /> : "How can I help you?"}
+                  {typingSecond ? <TypingDots /> : employee}
                 </div>
-                <Avatar />
+                <Avatar src="/images/avatar-employee.webp" />
               </motion.div>
             )}
           </AnimatePresence>

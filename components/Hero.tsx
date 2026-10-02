@@ -58,13 +58,13 @@ export default function Hero() {
 
         <motion.div
           style={{ opacity: textOpacity, y: textY }}
-          className="relative z-10 flex h-full items-center pl-6 pr-6 md:pl-14 md:pr-10 xl:pl-24"
+          className="relative z-10 flex h-full items-center pl-6 pr-6 md:pl-14 md:pr-10 md:pt-24 xl:pl-24"
         >
-          <div className="min-w-0 max-w-[clamp(16rem,84vw,20rem)] pt-20 md:max-w-[clamp(14rem,26vw,32rem)] md:pt-0">
+          <div className="min-w-0 max-w-[clamp(16rem,84vw,20rem)] pt-20 md:max-w-[min(33vw,34rem)] md:pt-0 xl:max-w-[min(calc(39vw-8rem),36rem)]">
             <p className="font-body text-[clamp(0.85rem,1.75vw,1.15rem)] tracking-wide text-mist">
               B2B Webdesign
             </p>
-            <h1 className="mt-4 font-body text-[clamp(2.75rem,7.5vw,4.3rem)] font-medium leading-[1.08] text-linen">
+            <h1 className="mt-4 font-body text-[clamp(2.75rem,7.5vw,4.3rem)] font-medium leading-[1.08] text-linen md:text-[clamp(2rem,min(3.9vw,9vh),4.3rem)]">
               Websites that help{" "}
               <span className="font-logo font-normal text-clay">your</span>{" "}
               <span className="font-logo font-normal text-clay">
@@ -72,11 +72,11 @@ export default function Hero() {
               </span>{" "}
               grow.
             </h1>
-            <p className="mt-6 max-w-[clamp(13rem,27vw,33rem)] font-body text-[clamp(0.9rem,1vw,1.05rem)] leading-relaxed text-linen/70">
+            <p className="mt-6 max-w-[clamp(13rem,27vw,33rem)] font-body text-[clamp(0.9rem,1vw,1.05rem)] leading-relaxed text-linen/70 md:mt-[clamp(1rem,3.5vh,1.5rem)] md:max-w-full">
               Your website should do more than look good. It should build
               trust, explain what you do, and turn visitors into customers.
             </p>
-            <div className="mt-10">
+            <div className="mt-10 md:mt-[clamp(1.25rem,5vh,2.5rem)]">
               <a
                 href="#contact"
                 className="focus-ring group inline-flex items-center gap-2 font-accent text-[clamp(0.95rem,1.6vw,1.3rem)] text-linen"

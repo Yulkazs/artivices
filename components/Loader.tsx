@@ -58,7 +58,7 @@ const CSS = `
   align-items: center;
   justify-content: center;
   background:
-    radial-gradient(60% 50% at 50% 50%, rgba(201,185,154,0.10), rgba(201,185,154,0) 70%),
+    radial-gradient(60% 50% at 50% 50%, rgba(126, 115, 95, 0.1), rgba(201,185,154,0) 70%),
     ${INK};
   opacity: 1;
   visibility: visible;

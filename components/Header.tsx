@@ -6,6 +6,7 @@ import LogoMark from "./LogoMark";
 const NAV_LINKS = [
   { label: "Home", href: "#top" },
   { label: "Case Studies", href: "#case-studies" },
+  { label: "Pricing", href: "#pricing" },
 ];
 
 export default function Header() {

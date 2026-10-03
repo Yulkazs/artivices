@@ -16,9 +16,11 @@ import {
   useReducedMotion,
 } from "framer-motion";
 
-/* Where every "Start with …" and "Discuss your project" button goes.
-   Switch to "/contact" once that page exists. */
-const CONTACT_HREF = "#contact";
+/* Every "Start with …" and "Discuss your project" button opens the request form.
+   With a package id the form opens with that package selected; without one the
+   customer chooses it there. Ids live in lib/packages.ts. */
+const startHref = (packageId?: string) =>
+  `/start?${packageId ? `package=${packageId}&` : ""}from=pricing`;
 
 type Tier = {
   name: string;
@@ -184,10 +186,6 @@ const fmt = (n: number) => n.toLocaleString("en-US");
 /* Design colors for the package cards */
 const FEATURED_BG =
   "linear-gradient(165deg, #d9d9d9 0%, #cfcbc8 30%, #c4bab3 58%, #b3a89b 100%)";
-
-/* -------------------------------------------------------------------------- */
-/*  Helpers                                                                   */
-/* -------------------------------------------------------------------------- */
 
 function CountUp({ to, delay = 0 }: { to: number; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -357,14 +355,16 @@ function StartButton({
   name,
   featured,
   label,
+  packageId,
 }: {
   name: string;
   featured: boolean;
   label?: string;
+  packageId?: string;
 }) {
   return (
     <Link
-      href={CONTACT_HREF}
+      href={startHref(packageId)}
       className={`group/cta relative flex w-full items-center justify-between rounded-lg py-3.5 pl-6 pr-4 font-body text-base transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay md:text-lg ${
         featured
           ? "bg-[#57534a] text-[#d9d9d9] hover:bg-[#46433b]"
@@ -394,17 +394,15 @@ function StartButton({
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Panels                                                                    */
-/* -------------------------------------------------------------------------- */
-
 function TierCard({
   tier,
   index,
+  category,
   className = "",
 }: {
   tier: Tier;
   index: number;
+  category: "website" | "branding";
   className?: string;
 }) {
   const featured = !!tier.popular;
@@ -456,7 +454,11 @@ function TierCard({
       </div>
 
       <div className="mt-auto pt-10">
-        <StartButton name={tier.name} featured={featured} />
+        <StartButton
+          name={tier.name}
+          featured={featured}
+          packageId={`${category}-${tier.name.toLowerCase()}`}
+        />
       </div>
     </Card>
   );
@@ -470,6 +472,7 @@ function WebsitePanel() {
           key={t.name}
           tier={t}
           index={i}
+          category="website"
           className={i === 2 ? "md:col-span-2 lg:col-span-1" : ""}
         />
       ))}
@@ -481,7 +484,7 @@ function BrandingPanel() {
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4">
       {BRANDING.map((t, i) => (
-        <TierCard key={t.name} tier={t} index={i} />
+        <TierCard key={t.name} tier={t} index={i} category="branding" />
       ))}
     </div>
   );
@@ -530,6 +533,10 @@ function CarePanel() {
         <p className="mt-7 border-t border-[#d9d9d9]/20 pt-5 font-body text-xs opacity-60">
           Every website includes thirty days of support after go-live.
         </p>
+
+        <div className="mt-auto pt-8">
+          <StartButton name="Hosting + Care" featured={false} packageId="care-hosting-care" />
+        </div>
       </Card>
 
       <Card index={1} className="md:col-span-4">
@@ -566,14 +573,14 @@ function CarePanel() {
             </motion.li>
           ))}
         </motion.ul>
+
+        <div className="mt-auto pt-8">
+          <StartButton name="Hosting only" featured={false} packageId="care-hosting-only" />
+        </div>
       </Card>
     </div>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Contact card                                                              */
-/* -------------------------------------------------------------------------- */
 
 function NotSureCard({ compact }: { compact: boolean }) {
   const reduce = useReducedMotion();
@@ -605,7 +612,7 @@ function NotSureCard({ compact }: { compact: boolean }) {
         </div>
 
         <Link
-          href={CONTACT_HREF}
+          href={startHref()}
           className="group/cta inline-flex shrink-0 items-center justify-center gap-3 self-start rounded-full bg-[#ADA092] px-7 py-3.5 font-body text-base text-ink transition-all duration-300 hover:bg-clay-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay md:px-8 md:py-4 md:text-lg"
         >
           Discuss your project
@@ -653,15 +660,12 @@ function CustomCard() {
           name={CUSTOM.name}
           featured={false}
           label="Contact us for a custom quote"
+          packageId="website-custom"
         />
       </div>
     </Card>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/*  Section                                                                   */
-/* -------------------------------------------------------------------------- */
 
 export default function Pricing() {
   const ref = useRef<HTMLElement>(null);

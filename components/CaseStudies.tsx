@@ -145,7 +145,7 @@ function CtaPanel() {
   return (
     <div className="w-full shrink-0 px-6 py-14 md:-ml-[2vw] md:flex md:h-full md:w-[52vw] md:items-center md:px-0 md:py-0">
       <Link
-        href="/contact"
+        href="/start?from=case-studies"
         className="group relative flex w-full flex-col justify-between gap-12 rounded-2xl px-8 py-10 text-[#fafafa] transition-transform duration-500 hover:scale-[1.015] md:h-[min(32vw,72vh)] md:w-[44vw] md:px-[3vw] md:py-[2.5vw]"
         style={{ backgroundColor: INK }}
       >

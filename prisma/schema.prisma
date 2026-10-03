@@ -1,0 +1,84 @@
+// Artivices — project requests
+//
+// Written by the website's /start form, read by the portal (Trello-style board).
+// Neon: use the POOLED connection string for DATABASE_URL (runtime) and the
+// DIRECT one for DIRECT_URL (migrations). See .env.example.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Where a request is in our process. The portal maps these to board columns.
+enum RequestStatus {
+  NEW
+  IN_REVIEW
+  QUOTE_SENT
+  ACCEPTED
+  DECLINED
+  ARCHIVED
+}
+
+enum ContactMethod {
+  EMAIL
+  PHONE
+}
+
+model ProjectRequest {
+  id        String        @id @default(cuid())
+  /// Short human code shown to the customer, e.g. ART-7K3M9Q
+  reference String        @unique
+  status    RequestStatus @default(NEW)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  // --- Package -------------------------------------------------------------
+  /// e.g. "website-business", "branding-logos", "care-hosting-care", "unsure"
+  packageId       String
+  /// Which button the customer came from: "pricing", "hero", "header", "case-studies", "direct"
+  source          String
+  /// True when the customer picked a different package than the one they arrived with
+  packageChanged  Boolean @default(false)
+
+  // --- Contact -------------------------------------------------------------
+  firstName       String
+  lastName        String
+  email           String
+  phone           String?
+  preferredContact ContactMethod @default(EMAIL)
+
+  // --- Company -------------------------------------------------------------
+  companyName     String
+  companyWebsite  String?
+  industry        String?
+  role            String?
+  companySize     String?
+
+  // --- Project -------------------------------------------------------------
+  /// brand-website | product-saas | commerce | portal | branding | care | other
+  projectType     String
+  description     String  @db.Text
+  /// Tailored answers, keyed by question id (see lib/questions.ts)
+  details         Json
+
+  // --- Planning ------------------------------------------------------------
+  budget          String?
+  timeline        String?
+  hasExistingSite Boolean?
+  existingSiteUrl String?
+  inspiration     String? @db.Text
+  referral        String?
+
+  // --- Consent -------------------------------------------------------------
+  privacyConsentAt DateTime
+
+  // --- Portal (internal, never written by the website) -----------------------
+  internalNotes   String? @db.Text
+
+  @@index([status, createdAt])
+  @@index([email, createdAt])
+}

@@ -78,7 +78,7 @@ export default function Hero() {
             </p>
             <div className="mt-10 md:mt-[clamp(1.25rem,5vh,2.5rem)]">
               <a
-                href="#contact"
+                href="/start?from=hero"
                 className="focus-ring group inline-flex items-center gap-2 font-accent text-[clamp(0.95rem,1.6vw,1.3rem)] text-linen"
               >
                 Get Started
